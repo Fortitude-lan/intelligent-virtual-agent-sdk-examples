@@ -176,6 +176,15 @@ This toolkit is released for academic and research purposes only, free of charge
 If this work helps your research, please cite the following papers:
 
 ```
+@article{LiAnthromorphicAI2026,
+  author  = {Li, Ke and Mostajeran, Fariba and Rings, Sebastian and Hertel, Julia and Schmidt, Susanne and Arz, Michael and Steinicke, Frank},
+  title   = {Anthropomorphic AI: A Toolkit for Authoring and Interacting with Intelligent Virtual Agents for Extended Reality},
+  journal = {Frontiers in Virtual Reality},
+  year    = {2026},
+  volume  = {7},
+  doi     = {10.3389/frvir.2026.1794720}
+}
+
 
 @article{Li2025IHS,
   title={I Hear, See, Speak \& Do: Bringing Multimodal Information Processing to Intelligent Virtual Agents for Natural Human-AI Communication},
@@ -184,15 +193,6 @@ If this work helps your research, please cite the following papers:
   year={2025},
   pages={1648-1649},
   url={https://api.semanticscholar.org/CorpusID:278063630}
-}
-
-@article{Mostajeran2025ATF,
-  title={A Toolkit for Creating Intelligent Virtual Humans in Extended Reality},
-  author={Fariba Mostajeran and Ke Li and Sebastian Rings and Lucie Kruse and Erik Wolf and Susanne Schmidt and Michael Arz and Joan Llobera and Pierre Nagorny and Caecilia Charbonnier and Hannes Fassold and Xenxo Alvarez and Andr{\'e} Tavares and Nuno Santos and Jo{\~a}o Orvalho and Sergi Fern{\'a}ndez and Frank Steinicke},
-  journal={2025 IEEE Conference on Virtual Reality and 3D User Interfaces Abstracts and Workshops (VRW)},
-  year={2025},
-  pages={736-741},
-  url={https://api.semanticscholar.org/CorpusID:278065150}
 }
 
 ```
