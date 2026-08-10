@@ -1,9 +1,14 @@
-# Intelligent Virtual Human SDK (v2.0.0)
+# Intelligent Virtual Human SDK — Unity Example Project (v3.0.0)
 
+This is a ready-to-open Unity project that consumes the Intelligent Virtual Human SDK developed by the [human computer interaction group](https://www.inf.uni-hamburg.de/en/inst/ab/hci.html) at Hamburg University. Open it and you get a working agent scene without wiring the package up yourself.
 
-The package contains the Intelligent Virtual Human SDK developed by the [human computer interaction group](https://www.inf.uni-hamburg.de/en/inst/ab/hci.html) at Hamburg University. 
+> ### 🎉 Now tracking SDK v3.0.0
+>
+> This template is pinned to the **v3.0.0** release of the SDK. The headline feature is **document grounding** — an agent can answer from a corpus you supply instead of from whatever the model absorbed in pre-training. v3.0.0 also adds an in-game HUD, a setup wizard, structured logging, and a typed exception hierarchy.
+>
+> **No API breaks** from v2.3.x — every addition is opt-in. Full details in the [changelog](https://github.com/uhhhci/intelligent-virtual-agent-sdk/blob/v3.0.0/CHANGELOG.md).
 
-<span style="color:red"> ***Please note that the usage of the SDK requires ethical & responsible use. Details can be found [here](./LICENSE.md).***</span>
+<span style="color:red"> ***Please note that the usage of the SDK requires ethical & responsible use. Details can be found [here](https://github.com/uhhhci/intelligent-virtual-agent-sdk/blob/v3.0.0/LICENSE.md).***</span>
 
 
 ***For more detail on the ethical Issues of impersonation and AI fakes we refer to the following [paper](https://zenodo.org/records/15413114):*** 
@@ -19,8 +24,11 @@ Our toolkit is compatible with CC4, Microsoft-rocketbox, and DIDIMO 3D virtual h
 
 ## Table of content 
 - [Requirements](#requirements)
+- [How this project consumes the SDK](#how-this-project-consumes-the-sdk)
+- [What's new in v3.0.0](#whats-new-in-v300)
 - [Main Features](#main-features)
 - [Quick Start](#quick-start)
+- [Grounding an agent in documents](#grounding-an-agent-in-documents)
 - [Documentation](#documentation)
 - [DIDIMO Character License Notice](#didimo-character-license-notice)
 - [Rocketbox Character License Notice](#rocketbox-characters-license-notice)
@@ -32,6 +40,45 @@ Our toolkit is compatible with CC4, Microsoft-rocketbox, and DIDIMO 3D virtual h
 
 ### Requirements
 * Unity 2022.3 LTS and above, Universal Render Pipeline (URP). This template file implements unity 6.2
+* **Git** must be installed and on your `PATH` — Unity's Package Manager shells out to it to fetch the SDK.
+* **Git LFS** must be installed. The SDK ships character models and native audio DLLs through LFS; without it you will get unusable pointer files instead of real assets.
+
+### How this project consumes the SDK
+
+The SDK is referenced as a git dependency pinned to a release tag, in [`Packages/manifest.json`](./Packages/manifest.json):
+
+```json
+"de.uhh.hci.ivh.core": "https://git.informatik.uni-hamburg.de/presence/public/iva-sdk-core-public.git#v3.0.0"
+```
+
+Unity resolves this on first open and caches it under `Library/PackageCache/`. The package is read-only there — see [developing the package](https://github.com/uhhhci/intelligent-virtual-agent-sdk/blob/v3.0.0/Documentations~/howToDevelopPackage.md) if you need to edit the SDK itself.
+
+To move to a different release, change the tag after `#`. Dropping the `#v3.0.0` suffix entirely tracks the tip of `main`, which is not recommended for reproducible work. The same release is mirrored on [GitHub](https://github.com/uhhhci/intelligent-virtual-agent-sdk) if you prefer that remote:
+
+```json
+"de.uhh.hci.ivh.core": "https://github.com/uhhhci/intelligent-virtual-agent-sdk.git#v3.0.0"
+```
+
+#### ⚠️ Windows: enable long paths first
+
+Unity caches git packages under a deep path (`Library/PackageCache/de.uhh.hci.ivh.core@<40-char-commit-sha>/…`). Combined with the SDK's nested plugin folders this exceeds the Windows 260-character `MAX_PATH` limit, and the checkout fails part-way with `error: unable to create file … Filename too long`. The Azure Speech DLLs are the first casualties, and Unity then reports missing assemblies.
+
+Run this **once**, before opening the project:
+
+```sh
+git config --global core.longpaths true
+```
+
+Keeping the project close to the drive root (for example `C:\dev\iva-example`) also helps, since the limit applies to the whole absolute path. macOS and Linux are unaffected.
+
+### What's new in v3.0.0
+
+- **Document grounding.** Three interchangeable strategies, all implementing one `IContextProvider` contract and combinable on a single agent: editor-baked `KnowledgeBase` assets with Gemini-embedding RAG, per-turn retrieval exposed to Gemini Live as a `search_knowledge` function tool, and whole-document injection for corpora that fit the context window.
+- **In-game HUD.** A dual-panel overlay for `GeminiLiveAgent` with a live transcription panel and a settings panel — reconnect, microphone and camera selection with preview, vision on/off, stream frequency, interruption and echo handling. Both panels drag and resize at runtime.
+- **Setup wizard.** A unified `IVA SDK` menu handling dependencies, credentials, and sanity checks in one window.
+- **Structured logging and typed exceptions.** `IVALogger` with severity and category filtering, plus an `IVAException` hierarchy so failures are catchable by type instead of by string-matching the Console.
+- **Long-term memory, session recording, and metrics**, and `AgentPreset` assets for serializing a whole agent configuration.
+- **Realtime session fixes.** Vertex AI previously could not connect at all when a tool was attached; thinking was only disabled on Vertex, making AI Studio noticeably slower; and reconnects did not refresh the Vertex token. All three are fixed with no public API change.
 
 ### Main features
 The image above shows the interaction loop of a conversational virtual agent. 
@@ -42,7 +89,7 @@ The image above shows the interaction loop of a conversational virtual agent.
     - <b>realistic IVA behavior</b> combining the multimodal output, including gaze, action, and facial expressions. 
 
 
-If you want to have more modularized cloud services (e.g. using different STT, LLM, TTS models), checkout [documentation for v1.0](./README_v1.0.md)
+If you want to have more modularized cloud services (e.g. using different STT, LLM, TTS models), checkout [documentation for v1.0](https://github.com/uhhhci/intelligent-virtual-agent-sdk/blob/v3.0.0/READMEv1.0.0.md)
 
 
 ## Quick Start
@@ -67,7 +114,22 @@ If you want to have more modularized cloud services (e.g. using different STT, L
 
 - Add the `Packages/de.uhh.hci.ivh.core/Runtime/Prefabs/PreviewScenePrefab.prefab` to the scene for better lighting and appearance of the scene. 
 
-- A sample scene with ``Gemini Live Agent `` is already setup in the ``Assets/Samples/ConversationalAgent/GeminiLiveAgent`` Unity scene. 
+- Two ready-made scenes ship with this project:
+    - `Assets/Scenes/GeminiLiveStreamAgentWebcamRocketbox.unity` — a realtime voice **and** vision agent that sees through your webcam.
+    - `Assets/Scenes/GeminiVoiceOnlyAgent.unity` — a voice-only agent, useful when you have no camera or want lower bandwidth.
+
+- Further sample scenes are shipped inside the package itself. Import them from **Window → Package Manager → Intelligent Virtual Human SDK Core → Samples**; they land under `Assets/Samples/Intelligent Virtual Human SDK Core/3.0.0/`.
+
+## Grounding an agent in documents
+
+New in v3.0.0: an agent can answer from your own documents rather than from the model's pre-training. Two of the shipped samples demonstrate the extremes, and both use entirely fictional corpora:
+
+| Sample | Strategy | Setup required |
+| :--- | :--- | :--- |
+| **Knowledge Grounding — Long Document via Prompt** | Injects the whole document into the prompt at session start. No chunking, embedding, or baking; every fact is always in context. | API key only |
+| **Knowledge Grounding — RAG Retrieval (Gemini Embeddings)** | Per-turn retrieval over a baked corpus. The agent calls a `search_knowledge` tool and only the top-K chunks enter the prompt, so the corpus can exceed the context window. | Requires baking the `KnowledgeBase` asset first |
+
+Start with the long-document sample — it needs nothing beyond a Gemini key. Move to RAG when your corpus outgrows the context window. The full guide, including chunking parameters, citation formatting, and how to swap in your own embedder or vector store, is in [Grounding an agent in documents](https://github.com/uhhhci/intelligent-virtual-agent-sdk/blob/v3.0.0/Documentations~/howToGroundAgentInDocuments.md).
 
 
 ## Connect to Gemini Live Cloud Service
@@ -139,12 +201,14 @@ Your `.aiapi` folder should contain one of the following files depending on your
 ## Documentation
 
 - For the full Documentation, visit the [Wiki](https://github.com/uhhhci/intelligent-virtual-agent-sdk/wiki).
-- [How to add more/custom animations to IVA actions](./Documentations/howToAddMoreAnimations.md)
-- [How to develop the package while using it  in Unity](https://github.com/uhhhci/intelligent-virtual-agent-sdk/wiki/Development).
+- [Release notes for v3.0.0](https://github.com/uhhhci/intelligent-virtual-agent-sdk/blob/v3.0.0/CHANGELOG.md)
+- [How to ground an agent in your own documents](https://github.com/uhhhci/intelligent-virtual-agent-sdk/blob/v3.0.0/Documentations~/howToGroundAgentInDocuments.md)
+- [How to add more/custom animations to IVA actions](https://github.com/uhhhci/intelligent-virtual-agent-sdk/blob/v3.0.0/Documentations~/howToAddMoreAnimations.md)
+- [How to develop the package while using it in Unity](https://github.com/uhhhci/intelligent-virtual-agent-sdk/blob/v3.0.0/Documentations~/howToDevelopPackage.md)
 
 ## [DIDIMO](https://www.didimo.co/) Character License Notice
 
- The DIDIMO asset is licensed solely for use within this repository and only to the extent necessary to build, test, and demonstrate this toolkit. You must not: resell the asset, redistribute the asset separately from this repository, or recreate, extract, or adapt the asset for use in any other project, product, or context.  See the detail [License](./LICENSE.md). 
+ The DIDIMO asset is licensed solely for use within this repository and only to the extent necessary to build, test, and demonstrate this toolkit. You must not: resell the asset, redistribute the asset separately from this repository, or recreate, extract, or adapt the asset for use in any other project, product, or context.  See the detail [License](https://github.com/uhhhci/intelligent-virtual-agent-sdk/blob/v3.0.0/LICENSE.md). 
 
 ## Rocketbox Characters License Notice
 
@@ -170,7 +234,7 @@ Name: Ke Li, Sebastian Rings , Julia Hertel, Michael Arz<br>
 Mail: ke.li@uni-hamburg.de, sebastian.rings@uni-hamburg.de, julia.hertel@uni-hamburg.de, michael.arz@uni-hamburg.de
 
 ### License
-This toolkit is released for academic and research purposes only, free of charge. For commercial use, a seperate license must be obtained.  Please find detailed licensing information [here](./LICENSE.md)
+This toolkit is released for academic and research purposes only, free of charge. For commercial use, a seperate license must be obtained.  Please find detailed licensing information [here](https://github.com/uhhhci/intelligent-virtual-agent-sdk/blob/v3.0.0/LICENSE.md)
 
 ### Citation
 If this work helps your research, please cite the following papers:
@@ -185,7 +249,6 @@ If this work helps your research, please cite the following papers:
   doi     = {10.3389/frvir.2026.1794720}
 }
 
-
 @article{Li2025IHS,
   title={I Hear, See, Speak \& Do: Bringing Multimodal Information Processing to Intelligent Virtual Agents for Natural Human-AI Communication},
   author={Ke Li and Fariba Mostajeran and Sebastian Rings and Lucie Kruse and Susanne Schmidt and Michael Arz and Erik Wolf and Frank Steinicke},
@@ -195,6 +258,14 @@ If this work helps your research, please cite the following papers:
   url={https://api.semanticscholar.org/CorpusID:278063630}
 }
 
+@article{Mostajeran2025ATF,
+  title={A Toolkit for Creating Intelligent Virtual Humans in Extended Reality},
+  author={Fariba Mostajeran and Ke Li and Sebastian Rings and Lucie Kruse and Erik Wolf and Susanne Schmidt and Michael Arz and Joan Llobera and Pierre Nagorny and Caecilia Charbonnier and Hannes Fassold and Xenxo Alvarez and Andr{\'e} Tavares and Nuno Santos and Jo{\~a}o Orvalho and Sergi Fern{\'a}ndez and Frank Steinicke},
+  journal={2025 IEEE Conference on Virtual Reality and 3D User Interfaces Abstracts and Workshops (VRW)},
+  year={2025},
+  pages={736-741},
+  url={https://api.semanticscholar.org/CorpusID:278065150}
+}
 ```
 
 

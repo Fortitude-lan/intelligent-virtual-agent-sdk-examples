@@ -16,7 +16,7 @@
     "com.unity.visualscripting": "1.9.7",
     "com.unity.xr.meta-openxr": "2.2.1",
     "com.whisper.unity": "https://github.com/Macoron/whisper.unity.git?path=/Packages/com.whisper.unity",
-    "de.uhh.hci.ivh.core": "https://git.informatik.uni-hamburg.de/presence/public/iva-sdk-core-public.git",
+    "de.uhh.hci.ivh.core": "https://git.informatik.uni-hamburg.de/presence/public/iva-sdk-core-public.git#v3.0.0",
     "com.unity.modules.accessibility": "1.0.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
@@ -49,5 +49,8 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  }
+  },
+  "testables": [
+    "de.uhh.hci.ivh.core"
+  ]
 }

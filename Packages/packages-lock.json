@@ -382,14 +382,14 @@
       "hash": "529a628a915a97799e89e061af9cb7c71407124d"
     },
     "de.uhh.hci.ivh.core": {
-      "version": "https://git.informatik.uni-hamburg.de/presence/public/iva-sdk-core-public.git",
+      "version": "https://git.informatik.uni-hamburg.de/presence/public/iva-sdk-core-public.git#v3.0.0",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.animation.rigging": "1.2.1",
         "com.unity.nuget.newtonsoft-json": "3.2.1"
       },
-      "hash": "ed57974a5d43b240d6f7927b7e9f928778e0c0c3"
+      "hash": "631396d702154f95dc7c5c53d553de24fedfe78b"
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
